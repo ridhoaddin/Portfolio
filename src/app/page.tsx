@@ -10,10 +10,12 @@ import { Contact } from "@/components/sections/Contact";
 import { SmoothScroll } from "@/components/SmoothScroll";
 import { ScrollReveal } from "@/components/ScrollReveal";
 import { StackedScrollManager } from "@/components/StackedScrollManager";
+import { AntigravityPreloader } from "@/components/preloader/AntigravityPreloader";
 
 export default function Home() {
   return (
     <>
+      <AntigravityPreloader />
       <Navbar />
       <main className="relative">
         {/* Panel 1: Hero + Checkerboard ticker */}

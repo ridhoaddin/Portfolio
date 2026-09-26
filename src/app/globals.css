@@ -187,6 +187,19 @@ body {
   animation: gentleFloat 4s ease-in-out infinite;
 }
 
+@keyframes antigravityBob {
+  0% {
+    transform: translate3d(0, 0px, 0);
+  }
+  100% {
+    transform: translate3d(0, -12px, 0);
+  }
+}
+
+.animate-antigravity-bob {
+  animation: antigravityBob 3.5s ease-in-out infinite alternate;
+}
+
 @keyframes pulseGlow {
   0%, 100% { opacity: 1; transform: scale(1); }
   50% { opacity: 0.5; transform: scale(1.08); }

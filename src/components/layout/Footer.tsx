@@ -22,6 +22,17 @@ export function Footer() {
           <span className="text-zinc-400">&copy; {new Date().getFullYear()} Ridho</span>
           <span className="text-zinc-600">•</span>
           <button
+            onClick={() => {
+              window.scrollTo({ top: 0, behavior: "instant" });
+              window.dispatchEvent(new CustomEvent("replay-preloader"));
+            }}
+            className="inline-flex items-center gap-1 text-zinc-400 hover:text-yellow transition-colors cursor-pointer uppercase tracking-wider"
+            title="Replay the Antigravity Preloader"
+          >
+            <span>Replay Intro</span>
+          </button>
+          <span className="text-zinc-600">•</span>
+          <button
             onClick={scrollToTop}
             className="inline-flex items-center gap-1 text-yellow uppercase tracking-wider border-b border-yellow hover:text-pink hover:border-pink transition-colors cursor-pointer"
           >
