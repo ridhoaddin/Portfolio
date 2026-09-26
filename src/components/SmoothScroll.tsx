@@ -4,13 +4,9 @@ import { useEffect } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 function getElementDocumentTop(element: HTMLElement): number {
-  let top = 0;
-  let curr: HTMLElement | null = element;
-  while (curr && curr !== document.body) {
-    top += curr.offsetTop;
-    curr = curr.offsetParent as HTMLElement;
-  }
-  return top;
+  const navHeight = 64;
+  const rect = element.getBoundingClientRect();
+  return Math.max(0, rect.top + window.scrollY - navHeight);
 }
 
 export function SmoothScroll() {

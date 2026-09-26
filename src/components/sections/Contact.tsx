@@ -147,9 +147,32 @@ export function Contact() {
   }, []);
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(email);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(email).catch(() => {
+        fallbackCopy(email);
+      });
+    } else {
+      fallbackCopy(email);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 2400);
+  };
+
+  const fallbackCopy = (text: string) => {
+    try {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-9999px";
+      textArea.style.top = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+    } catch (e) {
+      console.error("Failed to copy:", e);
+    }
   };
 
   const socials = [

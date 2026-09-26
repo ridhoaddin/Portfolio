@@ -43,6 +43,7 @@ svg {
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
   overflow-x: clip;
   text-rendering: optimizeLegibility;
 }
@@ -217,6 +218,7 @@ body {
   width: 100%;
   will-change: transform, opacity;
   transform-origin: center top;
+  scroll-margin-top: 4.5rem;
 }
 
 .stacked-panel-hero {

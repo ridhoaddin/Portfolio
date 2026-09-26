@@ -229,10 +229,14 @@ export function Hero() {
               {/* Main Profile Terminal Card */}
               <div className="relative border-2 border-border bg-white p-4 sm:p-5 shadow-sm transition-transform duration-200 group-hover/card:-translate-x-0.5 group-hover/card:-translate-y-0.5">
                 {/* Floating Creative Badge at Top-Right */}
-                <div className="animate-gentle-float absolute -top-3.5 -right-3.5 flex items-center gap-1 border-2 border-border bg-pink px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-black shadow-[2px_2px_0_#09090b] rotate-2 z-20 transition-transform duration-200 hover:rotate-6 hover:scale-110 cursor-pointer">
+                <a
+                  href="#about"
+                  className="animate-gentle-float absolute -top-3.5 -right-3.5 flex items-center gap-1 border-2 border-border bg-pink px-2.5 py-1 text-[11px] font-black uppercase tracking-wider text-black shadow-[2px_2px_0_#09090b] rotate-2 z-20 transition-transform duration-200 hover:rotate-6 hover:scale-110 cursor-pointer no-underline"
+                  title="Learn more about Ridho"
+                >
                   <Layers className="h-3.5 w-3.5" />
                   <span>UI Craftsman</span>
-                </div>
+                </a>
 
                 {/* Window Header */}
                 <div className="mb-3 flex items-center justify-between border-b-2 border-border pb-2.5">

@@ -19,13 +19,9 @@ export function Navbar() {
   const lastScrollY = useRef(0);
 
   const getElementDocumentTop = (element: HTMLElement): number => {
-    let top = 0;
-    let curr: HTMLElement | null = element;
-    while (curr && curr !== document.body) {
-      top += curr.offsetTop;
-      curr = curr.offsetParent as HTMLElement;
-    }
-    return top;
+    const navHeight = 64;
+    const rect = element.getBoundingClientRect();
+    return Math.max(0, rect.top + window.scrollY - navHeight);
   };
 
   const handleNavClick = (href: string, e: React.MouseEvent) => {

@@ -68,8 +68,8 @@ export function Projects() {
       accentBg: "bg-pink",
       icon: Brain,
       image: "/projects/neural-dashboard.png",
-      liveUrl: "https://github.com",
-      githubUrl: "https://github.com",
+      liveUrl: "https://github.com/ridhoaddin",
+      githubUrl: "https://github.com/ridhoaddin",
     },
     {
       id: "03",
@@ -83,8 +83,8 @@ export function Projects() {
       accentBg: "bg-yellow",
       icon: Mountain,
       image: "/projects/trekker-trail-guide.png",
-      liveUrl: "https://github.com",
-      githubUrl: "https://github.com",
+      liveUrl: "https://github.com/ridhoaddin",
+      githubUrl: "https://github.com/ridhoaddin",
     },
   ];
 
@@ -268,12 +268,12 @@ export function Projects() {
                 </div>
 
                 {/* Card Bottom Links */}
-                {/* <div className="border-t-2 border-border p-3.5 bg-[#f7f4ef] flex items-center justify-between gap-2 mt-auto">
+                <div className="border-t-2 border-border p-3.5 bg-[#f7f4ef] flex items-center justify-between gap-2 mt-auto">
                   <a
                     href={project.liveUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="neo-btn group/btn bg-black px-3 py-1.5 text-xs text-white no-underline shadow-[2px_2px_0_#fde047] hover:shadow-[3px_3px_0_#fde047] transition-all duration-150"
+                    className="neo-btn group/btn bg-black px-3 py-1.5 text-xs text-white no-underline shadow-[2px_2px_0_#fde047] hover:shadow-[3px_3px_0_#fde047] transition-all duration-150 cursor-pointer"
                   >
                     <span>Live Demo</span>
                     <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
@@ -283,12 +283,12 @@ export function Projects() {
                     href={project.githubUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="neo-btn group/btn bg-white px-3 py-1.5 text-xs text-black no-underline hover:bg-yellow shadow-[2px_2px_0_#09090b] transition-all duration-150"
+                    className="neo-btn group/btn bg-white px-3 py-1.5 text-xs text-black no-underline hover:bg-yellow shadow-[2px_2px_0_#09090b] transition-all duration-150 cursor-pointer"
                   >
                     <GithubIcon className="h-3.5 w-3.5 transition-transform duration-200 group-hover/btn:rotate-12" />
                     <span>Source</span>
                   </a>
-                </div> */}
+                </div>
               </div>
             );
           })}

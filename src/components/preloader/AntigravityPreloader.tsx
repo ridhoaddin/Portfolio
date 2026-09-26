@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { gsap } from "gsap";
 import { PreloaderProps } from "./preloader.types";
 
@@ -21,12 +21,41 @@ const HELLO_LANGUAGES = [
 
 export function AntigravityPreloader({
   onComplete,
-  durationMs = 9000,
+  durationMs = 3000,
 }: PreloaderProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const helloRef = useRef<HTMLDivElement>(null);
+  const timelineRef = useRef<gsap.core.Timeline | null>(null);
+  const [isFinished, setIsFinished] = useState(false);
+
+  const finish = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) {
+      document.body.style.overflow = "";
+      setIsFinished(true);
+      onComplete?.();
+      window.dispatchEvent(new CustomEvent("preloader-finished"));
+      return;
+    }
+
+    container.style.pointerEvents = "none";
+
+    gsap.to(container, {
+      opacity: 0,
+      duration: 0.4,
+      ease: "power2.out",
+      onComplete: () => {
+        document.body.style.overflow = "";
+        setIsFinished(true);
+        onComplete?.();
+        window.dispatchEvent(new CustomEvent("preloader-finished"));
+      },
+    });
+  }, [onComplete]);
 
   useEffect(() => {
+    if (isFinished) return;
+
     const container = containerRef.current;
     const hello = helloRef.current;
 
@@ -35,21 +64,14 @@ export function AntigravityPreloader({
     // Lock scrolling
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    container.style.pointerEvents = "auto";
+    container.style.display = "flex";
 
     let destroyed = false;
 
-    /*
-     * ==========================================
-     * INITIAL STATE
-     * ==========================================
-     */
-
     hello.textContent = HELLO_LANGUAGES[0];
 
-    gsap.set(container, {
-      opacity: 1,
-    });
-
+    gsap.set(container, { opacity: 1 });
     gsap.set(hello, {
       opacity: 0,
       y: 20,
@@ -57,81 +79,38 @@ export function AntigravityPreloader({
       filter: "blur(12px)",
     });
 
-    /*
-     * ==========================================
-     * MAIN TIMELINE
-     * ==========================================
-     */
-
     const timeline = gsap.timeline({
       onComplete: () => {
         if (destroyed) return;
-
-        gsap.to(container, {
-          opacity: 0,
-          duration: 0.7,
-          ease: "power2.out",
-
-          onComplete: () => {
-            if (destroyed) return;
-
-            document.body.style.overflow =
-              previousOverflow;
-
-            onComplete?.();
-
-            window.dispatchEvent(
-              new CustomEvent("preloader-finished")
-            );
-          },
-        });
+        finish();
       },
     });
 
-    /*
-     * ==========================================
-     * FIRST HELLO
-     * ==========================================
-     */
+    timelineRef.current = timeline;
 
+    // FIRST HELLO
     timeline.to(hello, {
       opacity: 1,
       y: 0,
       scale: 1,
       filter: "blur(0px)",
-      duration: 0.7,
+      duration: 0.5,
       ease: "power3.out",
     });
 
-    /*
-     * ==========================================
-     * LANGUAGE SEQUENCE
-     * ==========================================
-     *
-     * Setiap bahasa:
-     *
-     * 0.35s → tampil
-     * 0.22s → transisi keluar
-     * 0.28s → transisi masuk
-     *
-     * Total sekitar 8-9 detik.
-     */
-
+    // Snappy language transitions
     HELLO_LANGUAGES.slice(1).forEach((language) => {
-      // Hold bahasa sebelumnya
       timeline.to(hello, {
-        duration: 0.32,
+        duration: 0.16,
       });
 
-      // Fade + blur keluar
       timeline.to(hello, {
         opacity: 0,
         y: -8,
         scale: 0.985,
         filter: "blur(9px)",
-        duration: 0.22,
+        duration: 0.12,
         ease: "power2.inOut",
-
         onComplete: () => {
           if (!destroyed) {
             hello.textContent = language;
@@ -139,7 +118,6 @@ export function AntigravityPreloader({
         },
       });
 
-      // Bahasa baru masuk
       timeline.fromTo(
         hello,
         {
@@ -153,74 +131,59 @@ export function AntigravityPreloader({
           y: 0,
           scale: 1,
           filter: "blur(0px)",
-          duration: 0.28,
+          duration: 0.14,
           ease: "power3.out",
         }
       );
     });
 
-    /*
-     * ==========================================
-     * FINAL HOLD
-     * ==========================================
-     */
-
+    // Final hold
     timeline.to(hello, {
-      duration: 0.6,
+      duration: 0.3,
     });
 
-    /*
-     * ==========================================
-     * FINAL HELLO EXIT
-     * ==========================================
-     */
-
+    // Final hello exit
     timeline.to(hello, {
       opacity: 0,
       scale: 1.04,
       filter: "blur(16px)",
-      duration: 0.6,
+      duration: 0.4,
       ease: "power3.inOut",
     });
 
-    /*
-     * ==========================================
-     * REPLAY SUPPORT
-     * ==========================================
-     */
-
-    const handleReplay = () => {
-      timeline.restart();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        timeline.kill();
+        finish();
+      }
     };
 
-    window.addEventListener(
-      "replay-preloader",
-      handleReplay
-    );
-
-    /*
-     * ==========================================
-     * CLEANUP
-     * ==========================================
-     */
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
       destroyed = true;
-
       timeline.kill();
-
       gsap.killTweensOf(hello);
       gsap.killTweensOf(container);
-
-      document.body.style.overflow =
-        previousOverflow;
-
-      window.removeEventListener(
-        "replay-preloader",
-        handleReplay
-      );
+      document.body.style.overflow = previousOverflow || "";
+      window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [onComplete]);
+  }, [finish, isFinished]);
+
+  useEffect(() => {
+    const handleReplay = () => {
+      setIsFinished(false);
+    };
+
+    window.addEventListener("replay-preloader", handleReplay);
+    return () => {
+      window.removeEventListener("replay-preloader", handleReplay);
+    };
+  }, []);
+
+  if (isFinished) {
+    return null;
+  }
 
   return (
     <div
@@ -262,6 +225,38 @@ export function AntigravityPreloader({
           backgroundSize: "32px 32px",
         }}
       />
+
+      {/* Skip Button */}
+      <button
+        onClick={() => {
+          timelineRef.current?.kill();
+          finish();
+        }}
+        className="
+          absolute
+          top-5
+          right-5
+          z-20
+          px-3
+          py-1.5
+          text-xs
+          font-bold
+          uppercase
+          tracking-wider
+          border-2
+          border-black
+          bg-white
+          text-black
+          shadow-[2px_2px_0_#000]
+          hover:bg-black
+          hover:text-white
+          transition-colors
+          cursor-pointer
+        "
+        title="Skip intro"
+      >
+        Skip
+      </button>
 
       {/* Hello */}
       <div
